@@ -81,9 +81,7 @@
                         <i class="fa fa-bars"></i>
                         <span class="sr-only">Toggle Menu</span>
                     </button>
-                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
-                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" id="navbarCollapse">
                         <i class="fa fa-bars"></i>
                     </button>
 
@@ -97,6 +95,7 @@
 
                                 <form id="logout-form" action="{{route('logout')}}" method="POST">
                                     @csrf
+                                    <logout-component></logout-component>
                                 </form>
                             </li>
                         </ul>
@@ -124,6 +123,7 @@
 
     @auth
         <script>
+            window.token = {!! json_encode(session()->get('token')) !!}
             window.auth_roles = {!! json_encode(auth()->user()->roles) !!};
             window.auth_permissions = {!! json_encode(auth()->user()->permissions) !!};
         </script>

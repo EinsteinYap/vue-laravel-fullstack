@@ -16,7 +16,7 @@ import '@vueform/multiselect/themes/default.css';
 
 const app = createApp({})
 
-app.component('logout-component', LogoutComponent)
+app.component('logout-component', LogoutComponent);
 app.component('departments', Departments);
 app.component('permissions-create', PermissionsCreate);
 app.component('users', Users);

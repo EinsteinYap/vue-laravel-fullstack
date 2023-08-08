@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Permission;
 use Session;
+use Validator;
 
 class PermissionController extends Controller
 {
@@ -23,11 +24,15 @@ class PermissionController extends Controller
     {
         // return $request->all();
         if($request->permission_type == 'basic') {
-            $request->validate([
+            $validation = Validator::make($request->all(), [
                 'name'          => 'required',
                 'display_name'  => 'required',
                 'description'   => 'required',
             ]);
+    
+            if($validation->fails()) {
+                return redirect()->back()->withErrors($validation);
+            }
 
             Permission::create([
                 'name'          => $request->name,
@@ -37,9 +42,13 @@ class PermissionController extends Controller
 
             Session::flash('success-message', 'Permission created successfully!');
         }else if($request->permission_type == 'crud') {
-            $request->validate([
+            $validation = Validator::make($request->all(), [
                 'resource'      => 'required',
             ]);
+    
+            if($validation->fails()) {
+                return redirect()->back()->withErrors($validation);
+            }
 
             $crud = $request->crudSelected;
 
@@ -71,11 +80,15 @@ class PermissionController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validation = Validator::make($request->all(), [
             'name'          => 'required',
             'display_name'  => 'required',
             'description'   => 'required',
         ]);
+
+        if($validation->fails()) {
+            return redirect()->back()->withErrors($validation);
+        }
 
         Permission::where('id', $id)->update([
             'name'          => $request->name,

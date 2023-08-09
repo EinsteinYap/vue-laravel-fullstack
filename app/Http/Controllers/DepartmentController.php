@@ -9,18 +9,30 @@ use Session;
 
 class DepartmentController extends Controller
 {
-    // function __construct()
+    // function __construct() 
     // {
     //     $this->middleware('auth:api');
     // }
 
     // below code is related to vue js crud
 
+    public function searchDepartment()
+    {
+        if($search = \Request::get('name')) {
+            $departments = Department::where(function($query) use ($search) {
+                $query->where('name', 'LIKE', "%$search%");
+            })->latest()->paginate(10);
+        }else{
+            $departments = Department::latest()->paginate(10);
+        }
+        return response()->json($departments);
+    }
+
     public function getDepartments()
     {
         return response()->json(Department::latest()->paginate(10));
     }
-
+    
     public function storeDepartment(Request $request)
     {
         $request->validate([
@@ -40,14 +52,14 @@ class DepartmentController extends Controller
         $request->validate([
             'name'          => ['required']
         ]);
-
+        
         Department::where('id', $id)->update([
             'name'              => $request->name,
         ]);
 
         return response()->json('success');
     }
-
+    
     public function deleteDepartment($id)
     {
         Department::where('id', $id)->delete();
@@ -95,7 +107,7 @@ class DepartmentController extends Controller
         $request->validate([
             'name'          => ['required']
         ]);
-
+        
         Department::where('id', $id)->update([
             'name'              => $request->name,
         ]);

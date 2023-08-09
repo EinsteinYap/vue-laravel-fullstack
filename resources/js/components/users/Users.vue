@@ -7,6 +7,22 @@
                     <button class="btn btn-success float-end" @click="createUser" v-if="current_permissions.has('users-create')">New User</button>
                 </div>
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search_type">Search Type</label>
+                                <select name="search_type" class="form-control" v-model="searchData.search_type">
+                                    <option value="name">Name</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="search_value">Search Value</label>
+                                <input type="text" class="form-control" name="search_value" v-model="searchData.search_value" @keyup="searchUser">
+                            </div>
+                        </div>
+                    </div>
                     <!-- <button @click="testAction" class="btn btn-info">test</button> -->
                     <!-- {{test}} -->
                     <div class="table-responsive">
@@ -60,6 +76,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -145,9 +162,16 @@
                     selected_permission_categories: [],
                     selected_permissions: [],
                 }),
+                searchData: {
+                    search_type: 'name',
+                    search_value: '',
+                },
             }
         },
         methods: {
+            searchUser() {
+                this.$store.dispatch('searchUser', this.searchData)
+            },
             getResults(link) {
                 if(!link.url || link.active) {
                     return;

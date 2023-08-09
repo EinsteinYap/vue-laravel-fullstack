@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function() {
         Route::post('departments/update/{id}', 'update')->name('departmentsUpdate')->middleware('permission:departments-update');
         Route::post('departments/delete/{id}', 'delete')->name('departmentsDelete')->middleware('permission:departments-delete');
     });
-
+    
     Route::controller(RoleController::class)->group(function() {
         Route::get('roles/index', 'index')->name('rolesIndex')->middleware('permission:roles-read');
         Route::get('roles/create', 'create')->name('rolesCreate')->middleware('permission:roles-create');
@@ -49,8 +49,9 @@ Route::middleware(['auth'])->group(function() {
         Route::get('roles/edit/{id}', 'edit')->name('rolesEdit')->middleware('permission:roles-update');
         Route::post('roles/update/{id}', 'update')->name('rolesUpdate')->middleware('permission:roles-update');
         Route::post('roles/delete/{id}', 'delete')->name('rolesDelete')->middleware('permission:roles-delete');
+        Route::post('roles/search', 'search')->name('rolesSearch')->middleware('permission:roles-read');
     });
-
+    
     Route::controller(PermissionController::class)->group(function() {
         Route::get('permissions/index', 'index')->name('permissionsIndex')->middleware('permission:permissions-read');
         Route::get('permissions/create', 'create')->name('permissionsCreate')->middleware('permission:permissions-create');
@@ -58,8 +59,9 @@ Route::middleware(['auth'])->group(function() {
         Route::get('permissions/edit/{id}', 'edit')->name('permissionsEdit')->middleware('permission:permissions-update');
         Route::post('permissions/update/{id}', 'update')->name('permissionsUpdate')->middleware('permission:permissions-update');
         Route::post('permissions/delete/{id}', 'delete')->name('permissionsDelete')->middleware('permission:permissions-delete');
+        Route::post('permissions/search', 'search')->name('permissionsSearch')->middleware('permission:permissions-read');
     });
-
+    
     Route::get('users/index', [UserController::class, 'index'])->name('usersIndex')->middleware('permission:users-read');
 
     Route::controller(ProfileController::class)->group(function() {

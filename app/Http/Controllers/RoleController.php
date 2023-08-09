@@ -9,9 +9,22 @@ use Validator;
 
 class RoleController extends Controller
 {
+    public function search(Request $request)
+    {
+        if($request->search_type == 'name') {
+            $search_value = $request->search_value;
+            $roles = Role::where(function($query) use ($search_value) {
+                $query->where('name', 'LIKE', "%$search_value%")
+                ->orWhere('display_name', 'LIKE', "%$search_value%");
+            })->orderBy('id', 'desc')->paginate(10);
+        }
+
+        return view('management.roles.index', compact('roles', 'search_value'));
+    }
+
     public function index()
     {
-        $roles = Role::orderBy('id','desc')->paginate(10);
+        $roles = Role::orderBy('id', 'desc')->paginate(10);
         return view('management.roles.index', compact('roles'));
     }
 

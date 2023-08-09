@@ -8,6 +8,19 @@ use Hash;
 
 class UserController extends Controller
 {
+    public function searchUser()
+    {
+        if($search = \Request::get('name')) {
+            $users = User::where(function($query) use ($search) {
+                $query->where('name', 'LIKE', "%$search%")
+                ->orWhere('email', 'LIKE', "%$search%");
+            })->with('department')->with('roles')->with('permissions')->latest()->paginate(10);
+        }else{
+            $users = User::with('department')->with('roles')->with('permissions')->latest()->paginate(10);
+        }
+        return response()->json($users);
+    }
+
     public function index()
     {
         return view('management.users.index');
@@ -18,7 +31,7 @@ class UserController extends Controller
         return response()->json(User::with('department')->with('roles')->with('permissions')->latest()->paginate(10));
     }
 
-    public function storeUser(Request $request)
+    public function storeUser(Request $request) 
     {
         // return $request->all();
         $request->validate([

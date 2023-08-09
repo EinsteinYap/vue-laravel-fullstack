@@ -34,6 +34,15 @@ export default {
         }
     },
     actions: {
+        searchDepartment: (context, searchData) => {
+            setTimeout(function() {
+                axios.get(`${window.url}api/searchDepartment?${searchData.search_type}=${searchData.search_value}`).then((response) => {
+                    context.commit('set_departments', response.data)
+                }).catch(err => {
+                    console.log(err);
+                });
+            });
+        },
         getDepartmentsResults: (context, link) => {
             axios.get(link.url).then((response) => {
                 context.commit('set_departments', response.data)

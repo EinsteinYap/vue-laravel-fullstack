@@ -65,8 +65,7 @@ Route::middleware(['auth'])->group(function() {
     Route::controller(ProfileController::class)->group(function() {
         Route::get('profile/index', 'index')->name('profileIndex')->middleware('permission:profile-read');
         Route::post('profile/update/{id}', 'update')->name('profileUpdate')->middleware('permission:profile-update');
-        Route::post('profile/password/update/{id}', 'passwordUpdate')->name('profilePasswordUpdate');
-        // Route::post('profile/password/update/{id}', 'passwordUpdate')->name('profilePasswordUpdate')->middleware('permission:profile-password-update');
+        Route::post('profile/password/update/{id}', 'passwordUpdate')->name('profilePasswordUpdate')->middleware('permission:profile-password-update');
     });
 });
 

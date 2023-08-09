@@ -67,6 +67,12 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    {!! $permissions->links('pagination::bootstrap-5') !!}
+                </div>
+            </div>
         </div>
     </div>
 @endsection

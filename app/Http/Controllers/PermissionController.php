@@ -11,7 +11,7 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        $permissions = Permission::all();
+        $permissions = Permission::orderBy('id','desc')->paginate(10);
         return view('management.permissions.index', compact('permissions'));
     }
 
@@ -29,7 +29,7 @@ class PermissionController extends Controller
                 'display_name'  => 'required',
                 'description'   => 'required',
             ]);
-    
+
             if($validation->fails()) {
                 return redirect()->back()->withErrors($validation);
             }
@@ -45,7 +45,7 @@ class PermissionController extends Controller
             $validation = Validator::make($request->all(), [
                 'resource'      => 'required',
             ]);
-    
+
             if($validation->fails()) {
                 return redirect()->back()->withErrors($validation);
             }

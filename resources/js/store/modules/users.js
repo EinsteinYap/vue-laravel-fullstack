@@ -3,35 +3,36 @@ import axios from 'axios';
 export default {
     state: {
         users: [],
-        userLinks:[],
+        userLinks: [],
     },
     getters: {
         users(state) {
             return state.users
         },
-        userLinks(state){
+        userLinks(state) {
             return state.userLinks
-        }
+        },
     },
     mutations: {
         set_users: (state, data) => {
             state.users = data
             state.userLinks = [];
-            for(let i = 0;i<data.links.length;i++){
-                if(i ===1
-                    || i === Number(data.links.length -2)
+
+            for(let i = 0; i < data.links.length; i++) {
+                if(i === 1
+                    || i === Number(data.links.length - 2)
                     || data.links[i].active
                     || isNaN(data.links[i].label)
-                    || Number(data.links[i].label) === Number(data.current_page +1)
-                    || Number(data.links[i].label) === Number(data.current_page -1)
-                    ){
+                    || Number(data.links[i].label) === Number(data.current_page + 1)
+                    || Number(data.links[i].label) === Number(data.current_page - 1)
+                    ) {
                         state.userLinks.push(data.links[i]);
                     }
             }
         },
     },
     actions: {
-        getUsersResults:(context,link)=>{
+        getUsersResults: (context, link) => {
             axios.get(link.url).then((response) => {
                 context.commit('set_users', response.data)
             });
@@ -45,20 +46,32 @@ export default {
             userData.post(window.url + 'api/storeUser').then((response) => {
                 context.dispatch('getUsers')
                 $('#exampleModal').modal('hide')
+
+                window.Toast.fire({
+                    icon: 'success',
+                    title: 'User created successfully!'
+                });
             });
         },
         updateUser: (context, userData) => {
             userData.post(window.url + 'api/updateUser/' + userData.id).then((response) => {
                 context.dispatch('getUsers')
                 $('#exampleModal').modal('hide')
+
+                window.Toast.fire({
+                    icon: 'success',
+                    title: 'User updated successfully!'
+                });
             });
         },
         deleteUser: (context, userData) => {
-            if(confirm('Are you sure you wanna delete the user!')) {
-                axios.post(window.url + 'api/deleteUser/' + userData.id).then(() => {
-                    context.dispatch('getUsers')
+            axios.post(window.url + 'api/deleteUser/' + userData.id).then(() => {
+                context.dispatch('getUsers')
+                window.Toast.fire({
+                    icon: 'success',
+                    title: 'User deleted successfully!'
                 });
-            }
+            });
         }
     },
 }

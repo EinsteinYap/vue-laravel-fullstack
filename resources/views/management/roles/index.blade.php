@@ -50,12 +50,13 @@
                                                 @endcan
                                                 @can('roles-delete')
                                                     <div class="float-left mx-1">
-                                                        <form action="{{route('rolesDelete', $role->id)}}" method="POST">
+                                                        @include('management.roles.delete')
+                                                        {{-- <form action="{{route('rolesDelete', $role->id)}}" method="POST">
                                                             @csrf
                                                             <button class="btn btn-danger">
                                                                 <i class="fa fa-trash"></i>
                                                             </button>
-                                                        </form>
+                                                        </form> --}}
                                                     </div>
                                                 @endcan
                                             </td>
@@ -67,11 +68,11 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                {!! $roles->links('pagination::bootstrap-5') !!}
+            <div class="row">
+                <div class="col-md-12">
+                    {!! $roles->links('pagination::bootstrap-5') !!}
+                </div>
             </div>
         </div>
     </div>

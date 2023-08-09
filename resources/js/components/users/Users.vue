@@ -38,14 +38,16 @@
                             </tbody>
                         </table>
                     </div>
-                    <!-- Pagination -->
+
                     <div class="d-flex justify-content-center" v-if="userLinks.length > 3">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
-                                <li :class="`page-item ${link.active ? 'active':''} ${!link.url ? 'disabled':''}`" v-for="(link,index) in userLinks" :key="index"><a class="page-link" href="#" v-html="link.label" @click.prevent="getResults(link)"></a></li>
+                                <li :class="`page-item ${link.active ? 'active' : ''} ${!link.url ? 'disabled' : ''}`" v-for="(link, index) in userLinks" :key="index"><a class="page-link" href="#" v-html="link.label" @click.prevent="getResults(link)"></a></li>
                             </ul>
                         </nav>
                     </div>
+
+
 
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -146,11 +148,11 @@
             }
         },
         methods: {
-            getResults(link){
-                if(!link.url || link.active){
+            getResults(link) {
+                if(!link.url || link.active) {
                     return;
                 }else{
-                    this.$store.dispatch('getUsersResults',link)
+                    this.$store.dispatch('getUsersResults', link);
                 }
             },
             getFilteredPermissions(values) {
@@ -174,7 +176,7 @@
             },
             editUser(user) {
                 this.editMode = true
-
+                
                 this.userData.id = user.id
                 this.userData.department_id = user.department_id == 0 ? '' : user.department_id
                 this.userData.name = user.name
@@ -208,7 +210,19 @@
                 this.$store.dispatch('updateUser', this.userData)
             },
             deleteUser(user) {
-                this.$store.dispatch('deleteUser', user)
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.$store.dispatch('deleteUser', user)
+                        }
+                });
             },
         },
         mounted() {
@@ -217,9 +231,7 @@
             this.$store.dispatch('getAllRoles')
             this.$store.dispatch('getAllPermissions')
             this.$store.dispatch('getAuthRolesAndPermissions')
-
-
-        },
+        }, 
         computed: {
             users() {
                 return this.$store.getters.users
@@ -245,6 +257,6 @@
             current_permissions() {
                 return this.$store.getters.current_permissions
             }
-        }
+        } 
     }
 </script>

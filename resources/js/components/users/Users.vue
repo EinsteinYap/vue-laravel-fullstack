@@ -21,7 +21,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(user, index) in users" :key="index">
+                                <tr v-for="(user, index) in users.data" :key="index">
                                     <td>{{index + 1}}</td>
                                     <td>{{user.name}}</td>
                                     <td>{{user.email}}</td>
@@ -39,6 +39,17 @@
                         </table>
                     </div>
 
+                    <div class="d-flex justify-content-center">
+
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+
+                                <li :class="`page-item ${link.active ? 'active':''} ${!link.url ? 'disabled':''}`" v-for="(link,index) in userLinks" :key="index"><a class="page-link" href="#" v-html="link.label" @click.prevent="getResults(link)"></a></li>
+
+                            </ul>
+                        </nav>
+
+                    </div>
 
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -139,6 +150,13 @@
             }
         },
         methods: {
+            getResults(link){
+                if(!link.url || link.active){
+                    return;
+                }else{
+                    this.$store.dispatch('getUsersResults',link)
+                }
+            },
             getFilteredPermissions(values) {
                 this.$store.dispatch('getFilteredPermissions', {values: values}).then(() => {
                     this.userData.selected_permissions = [];
@@ -160,7 +178,7 @@
             },
             editUser(user) {
                 this.editMode = true
-                
+
                 this.userData.id = user.id
                 this.userData.department_id = user.department_id == 0 ? '' : user.department_id
                 this.userData.name = user.name
@@ -203,10 +221,15 @@
             this.$store.dispatch('getAllRoles')
             this.$store.dispatch('getAllPermissions')
             this.$store.dispatch('getAuthRolesAndPermissions')
-        }, 
+
+
+        },
         computed: {
             users() {
                 return this.$store.getters.users
+            },
+            userLinks() {
+                return this.$store.getters.userLinks
             },
             filtered_permissions() {
                 return this.$store.getters.filtered_permissions
@@ -226,6 +249,6 @@
             current_permissions() {
                 return this.$store.getters.current_permissions
             }
-        } 
+        }
     }
 </script>

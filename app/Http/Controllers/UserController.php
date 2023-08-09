@@ -15,10 +15,10 @@ class UserController extends Controller
 
     public function getUsers()
     {
-        return response()->json(User::with('department')->with('roles')->with('permissions')->get());
+        return response()->json(User::with('department')->with('roles')->with('permissions')->paginate(1));
     }
 
-    public function storeUser(Request $request) 
+    public function storeUser(Request $request)
     {
         // return $request->all();
         $request->validate([

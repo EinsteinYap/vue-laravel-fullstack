@@ -38,17 +38,13 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <div class="d-flex justify-content-center">
-
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-center" v-if="userLinks.length > 3">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
-
                                 <li :class="`page-item ${link.active ? 'active':''} ${!link.url ? 'disabled':''}`" v-for="(link,index) in userLinks" :key="index"><a class="page-link" href="#" v-html="link.label" @click.prevent="getResults(link)"></a></li>
-
                             </ul>
                         </nav>
-
                     </div>
 
                     <!-- Modal -->

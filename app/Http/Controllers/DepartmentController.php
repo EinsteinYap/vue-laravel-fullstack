@@ -9,7 +9,7 @@ use Session;
 
 class DepartmentController extends Controller
 {
-    // function __construct() 
+    // function __construct()
     // {
     //     $this->middleware('auth:api');
     // }
@@ -18,9 +18,9 @@ class DepartmentController extends Controller
 
     public function getDepartments()
     {
-        return response()->json(Department::latest()->get());
+        return response()->json(Department::latest()->paginate(1));
     }
-    
+
     public function storeDepartment(Request $request)
     {
         $request->validate([
@@ -40,14 +40,14 @@ class DepartmentController extends Controller
         $request->validate([
             'name'          => ['required']
         ]);
-        
+
         Department::where('id', $id)->update([
             'name'              => $request->name,
         ]);
 
         return response()->json('success');
     }
-    
+
     public function deleteDepartment($id)
     {
         Department::where('id', $id)->delete();
@@ -95,7 +95,7 @@ class DepartmentController extends Controller
         $request->validate([
             'name'          => ['required']
         ]);
-        
+
         Department::where('id', $id)->update([
             'name'              => $request->name,
         ]);

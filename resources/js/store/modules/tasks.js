@@ -33,9 +33,9 @@ export default {
         }
     },
     actions: {
-        // searchDepartment: (context, searchData) => {
+        // searchTask: (context, searchData) => {
         //     setTimeout(function() {
-        //         axios.get(`${window.url}api/searchDepartment?${searchData.search_type}=${searchData.search_value}`).then((response) => {
+        //         axios.get(`${window.url}api/searchTask?${searchData.search_type}=${searchData.search_value}`).then((response) => {
         //             context.commit('set_departments', response.data)
         //         }).catch(err => {
         //             console.log(err);

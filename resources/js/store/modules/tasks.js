@@ -4,6 +4,8 @@ export default {
     state: {
         tasks: {},
         tasksLinks: [],
+        inbox_tasks: {},
+        inboxTaskLinks: [],
     },
     getters: {
         tasks(state) {
@@ -11,6 +13,12 @@ export default {
         },
         tasksLinks(state) {
             return state.tasksLinks
+        },
+        inbox_tasks(state) {
+            return state.inbox_tasks
+        },
+        inboxTaskLinks(state) {
+            return state.inboxTaskLinks
         },
     },
     mutations: {
@@ -30,12 +38,29 @@ export default {
                         state.tasksLinks.push(data.links[i]);
                     }
             }
-        }
+        },
+        set_inbox_tasks: (state, data) => {
+            state.inbox_tasks = data
+
+            state.inboxTaskLinks = [];
+
+            for(let i = 0; i < data.links.length; i++) {
+                if(i === 1
+                    || i === Number(data.links.length - 2)
+                    || data.links[i].active
+                    || isNaN(data.links[i].label)
+                    || Number(data.links[i].label) === Number(data.current_page + 1)
+                    || Number(data.links[i].label) === Number(data.current_page - 1)
+                    ) {
+                        state.inboxTaskLinks.push(data.links[i]);
+                    }
+            }
+        },
     },
     actions: {
-        // searchTask: (context, searchData) => {
+        // searchDepartment: (context, searchData) => {
         //     setTimeout(function() {
-        //         axios.get(`${window.url}api/searchTask?${searchData.search_type}=${searchData.search_value}`).then((response) => {
+        //         axios.get(`${window.url}api/searchDepartment?${searchData.search_type}=${searchData.search_value}`).then((response) => {
         //             context.commit('set_departments', response.data)
         //         }).catch(err => {
         //             console.log(err);
@@ -47,9 +72,30 @@ export default {
                 context.commit('set_tasks', response.data)
             });
         },
+        getInboxTasksResults: (context, link) => {
+            axios.get(link.url).then((response) => {
+                context.commit('set_inbox_tasks', response.data)
+            });
+        },
         getTasks: (context) => {
             axios.get(`${window.url}api/getTasks`).then((response) => {
                 context.commit('set_tasks', response.data)
+            });
+        },
+        getInboxTasks: (context) => {
+            axios.get(`${window.url}api/getInboxTasks`).then((response) => {
+                context.commit('set_inbox_tasks', response.data)
+            });
+        },
+        storePerformTask: (context, data) => {
+            axios.post(window.url + 'api/storePerformTask', data.performTaskData, data.config).then((response) => {
+                context.dispatch('getInboxTasks')
+                $('#exampleModal').modal('hide')
+                $('#task_file').val('');
+                window.Toast.fire({
+                    icon: 'success',
+                    title: 'Task performance stored successfully!'
+                });
             });
         },
         storeTask: (context, taskData) => {

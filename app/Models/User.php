@@ -22,6 +22,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'department_id',
+        'user_level',
         'name',
         'email',
         'password',
@@ -53,6 +54,6 @@ class User extends Authenticatable
 
     public function tasks()
     {
-        return $this->belongsToMany('App\Models\Task');
+        return $this->belongsToMany('App\Models\Task')->with('users')->with('performed_by_user');
     }
 }

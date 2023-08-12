@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,13 +50,23 @@ Route::middleware(['forcetojson', 'auth:api'])->group(function() {
     });    
 
     Route::controller(TaskController::class)->group(function() {
+        Route::get('searchTask', 'searchTask')->middleware('permission:tasks-read');
         Route::get('getTasks', 'getTasks')->middleware('permission:tasks-read');
         Route::post('storeTask', 'storeTask')->middleware('permission:tasks-create');
         Route::post('updateTask/{id}', 'updateTask')->middleware('permission:tasks-update');
         Route::post('deleteTask/{id}', 'deleteTask')->middleware('permission:tasks-delete');
-
+        
+        Route::get('searchInbox', 'searchInbox')->middleware('permission:inbox-read');
         Route::get('getInboxTasks', 'getInboxTasks')->middleware('permission:inbox-read');
+        Route::get('searchCompleted', 'searchCompleted')->middleware('permission:completed-read');
         Route::get('getCompletedTasks', 'getCompletedTasks')->middleware('permission:completed-read');
         Route::post('storePerformTask', 'storePerformTask')->middleware('permission:inbox-update');
+    });
+
+    Route::controller(CommentController::class)->group(function() {
+        Route::get('getComments/{id}', 'getComments')->middleware('permission:comments-read');
+        Route::post('storeComment', 'storeComment')->middleware('permission:comments-create');
+        Route::post('updateComment/{id}', 'updateComment')->middleware('permission:comments-update');
+        Route::post('deleteComment/{id}', 'deleteComment')->middleware('permission:comments-delete');
     });
 });

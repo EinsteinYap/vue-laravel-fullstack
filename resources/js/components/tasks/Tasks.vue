@@ -12,14 +12,15 @@
                             <div class="form-group">
                                 <label for="search_type">Search Type</label>
                                 <select name="search_type" class="form-control" v-model="searchData.search_type">
-                                    <option value="name">Name</option>
+                                    <option value="title">Title | Priority | Dates</option>
+                                    <option value="users">Assigned To</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="search_value">Search Value</label>
-                                <input type="text" class="form-control" name="search_value" v-model="searchData.search_value" @keyup="searchDepartment">
+                                <input type="text" class="form-control" name="search_value" v-model="searchData.search_value" @keyup="searchTask">
                             </div>
                         </div>
                     </div>
@@ -37,6 +38,7 @@
                                     <th>Description</th>
                                     <th>Assign To</th>
                                     <th>Status</th>
+                                    <th v-if="current_permissions.has('comments-read')">Comments</th>
                                     <th v-if="current_permissions.has('tasks-update') || current_permissions.has('tasks-delete')">Actions</th>
                                 </tr>
                             </thead>
@@ -59,6 +61,11 @@
                                         <p v-if="task.progress == 0" class="text-danger">No Progress</p>
                                         <p v-if="task.progress > 0 && task.progress < 100" class="text-warning">Under Progress</p>
                                         <p v-if="task.progress == 100" class="text-success">Completed</p>
+                                    </td>
+                                    <td v-if="current_permissions.has('comments-read')">
+                                        <button type="button" class="btn btn-secondary" @click="showComments(task)">
+                                            <i class="fa fa-comment"></i>
+                                        </button>
                                     </td>
                                     <td v-if="current_permissions.has('tasks-update') || current_permissions.has('tasks-delete')">
                                         <button class="btn btn-info mx-1" @click="showTask(task)">
@@ -165,6 +172,8 @@
                         </div>
                     </div>
                     </div>
+
+                    <Comments :taskInfo="taskInfo" :comments="comments" />
                 </div>
             </div>
         </div>
@@ -173,9 +182,11 @@
 
 <script>
     import Show from './Show.vue';
+    import Comments from './Comments.vue';
     export default {
         components: {
             Show,
+            Comments,
         },
         mounted() {
             this.$store.dispatch('getTasks')
@@ -188,6 +199,9 @@
             },
             tasks() {
                 return this.$store.getters.tasks
+            },
+            comments() {
+                return this.$store.getters.comments
             },
             filtered_users() {
                 return this.$store.getters.filtered_users
@@ -214,18 +228,27 @@
                     assign_to: [],
                 }),
                 searchData: {
-                    search_type: 'name',
+                    search_type: 'title',
                     search_value: '',
                 },
             }
         },
         methods: {
+            searchTask() {
+                this.$store.dispatch('searchTask', this.searchData)
+            },
             getResults(link) {
                 if(!link.url || link.active) {
                     return;
                 }else{
                     this.$store.dispatch('getTasksResults', link);
                 }
+            },
+            showComments(task) {
+                this.taskInfo = task
+                window.emitter.emit('resetCommentData')
+                this.$store.dispatch('getComments', {taskData: task})
+                $('#commentsModal').modal('show')
             },
             showTask(task) {
                 this.showMode = true

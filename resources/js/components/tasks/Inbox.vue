@@ -13,14 +13,14 @@
                             <div class="form-group">
                                 <label for="search_type">Search Type</label>
                                 <select name="search_type" class="form-control" v-model="searchData.search_type">
-                                    <option value="name">Name</option>
+                                    <option value="title">Title | Priority | Dates</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="search_value">Search Value</label>
-                                <input type="text" class="form-control" name="search_value" v-model="searchData.search_value" @keyup="searchDepartment">
+                                <input type="text" class="form-control" name="search_value" v-model="searchData.search_value" @keyup="page_type == 'inbox' ? searchInbox() : searchCompleted()">
                             </div>
                         </div>
                     </div>
@@ -38,6 +38,7 @@
                                     <th>Description</th>
                                     <th>Assign To</th>
                                     <th>Status</th>
+                                    <th v-if="current_permissions.has('comments-read')">Comments</th>
                                     <th v-if="current_permissions.has('subs-read')">Sub Tasks</th>
                                     <th v-if="page_type == 'inbox' ? current_permissions.has('inbox-update') : current_permissions.has('completed-update')">Actions</th>
                                 </tr>
@@ -61,6 +62,11 @@
                                         <p v-if="task.progress == 0" class="text-danger">No Progress</p>
                                         <p v-if="task.progress > 0 && task.progress < 100" class="text-warning">Under Progress</p>
                                         <p v-if="task.progress == 100" class="text-success">Completed</p>
+                                    </td>
+                                    <td v-if="current_permissions.has('comments-read')">
+                                        <button type="button" class="btn btn-secondary" @click="showComments(task)">
+                                            <i class="fa fa-comment"></i>
+                                        </button>
                                     </td>
                                     <td v-if="current_permissions.has('subs-read')">
                                         <button class="btn btn-secondary mx-1" @click="subTasks(task)">
@@ -278,6 +284,8 @@
                         </div>
                     </div>
                     </div>
+
+                    <Comments :taskInfo="taskInfo" :comments="comments" />
                 </div>
             </div>
         </div>
@@ -286,9 +294,11 @@
 
 <script>
     import Show from './Show.vue'
+    import Comments from './Comments.vue';
     export default {
         components: {
             Show,
+            Comments,
         },
         mounted() {
             this.$store.dispatch('getInboxTasks')
@@ -317,6 +327,9 @@
             },
             completed_tasks() {
                 return this.$store.getters.completed_tasks
+            },
+            comments() {
+                return this.$store.getters.comments
             },
             filtered_users() {
                 return this.$store.getters.filtered_users
@@ -354,13 +367,19 @@
                     assign_to: [],
                 }),
                 searchData: {
-                    search_type: 'name',
+                    search_type: 'title',
                     search_value: '',
                 },
                 allSubTasks: {},
             }
         },
         methods: {
+            searchInbox() {
+                this.$store.dispatch('searchInbox', this.searchData)
+            },
+            searchCompleted() {
+                this.$store.dispatch('searchCompleted', this.searchData)
+            },
             getResults(link) {
                 if(!link.url || link.active) {
                     return;
@@ -371,6 +390,12 @@
                         this.$store.dispatch('getCompletedTasksResults', link);
                     }
                 }
+            },
+            showComments(task) {
+                this.taskInfo = task
+                window.emitter.emit('resetCommentData')
+                this.$store.dispatch('getComments', {taskData: task})
+                $('#commentsModal').modal('show')
             },
             subTasks(task) {
                 this.editMode = false

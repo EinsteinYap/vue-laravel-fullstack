@@ -29,9 +29,16 @@ class TaskController extends Controller
             'assign_to'     => ['required', 'array']
         ]);
 
+        if(isset($request->parent_id)) {
+            $parent_id = $request->parent_id;
+        }else{
+            $parent_id = 0;
+        }
+
         $task = Task::create([
             'user_id'           => auth('api')->user()->id,
             'department_id'     => auth('api')->user()->department_id,
+            'parent_id'         => $parent_id,
             'title'             => $request->title,
             'priority'          => $request->priority,
             'start_date'        => $request->start_date,
@@ -123,5 +130,16 @@ class TaskController extends Controller
         ]);
 
         return response()->json('success');
+    }
+
+    public function tasksCompleted()
+    {
+        return view('tasks.completed');
+    }
+
+    public function getCompletedTasks()
+    {
+        $tasks = auth('api')->user()->tasks()->where('status', '1')->latest()->paginate(1);
+        return response()->json($tasks);
     }
 }

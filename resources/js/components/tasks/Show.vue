@@ -34,6 +34,14 @@
                 </td>
             </tr>
             <tr>
+                <th style="width: 20%;">Status</th>
+                <td>
+                    <p v-if="taskInfo.progress == 0" class="text-danger">No Progress</p>
+                    <p v-if="taskInfo.progress > 0 && taskInfo.progress < 100" class="text-warning">Under Progress</p>
+                    <p v-if="taskInfo.progress == 100" class="text-success">Completed</p>
+                </td>
+            </tr>
+            <tr>
                 <th style="width: 20%;">Performed By</th>
                 <td>
                     <p>

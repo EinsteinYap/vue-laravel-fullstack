@@ -10,6 +10,33 @@ use App\Models\User;
 
 class ApiController extends Controller
 {
+    public function getAllNotifications()
+    {
+        return response()->json(auth('api')->user()->notifications);
+    }
+
+    public function getUnreadNotifications()
+    {
+        return response()->json(auth('api')->user()->unreadNotifications);
+    }
+
+    public function markNotificationAsRead()
+    {
+        $id = \Request::get('unread');
+        if($id != 0) {
+            auth('api')->user()->notifications->where('id', $id)->markAsRead();
+        }else{
+            auth('api')->user()->notifications->markAsRead();
+        }
+        return response()->json('success');
+    }
+    
+    public function clearAllNotifications()
+    {
+        auth('api')->user()->notifications()->delete();
+        return response()->json('success');
+    }
+
     public function getAllDepartments()
     {
         return response()->json(Department::all());

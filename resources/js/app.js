@@ -4,6 +4,7 @@ import {createApp} from 'vue'
 import {store} from './store/store'
 
 import LogoutComponent from './components/auth/LogoutComponent.vue';
+import NotificationsComponent from './components/NotificationsComponent.vue';
 import Departments from './components/Departments.vue';
 import PermissionsCreate from './components/permissions/PermissionsCreate.vue';
 import Users from './components/users/Users.vue';
@@ -12,6 +13,8 @@ import Inbox from './components/tasks/Inbox.vue';
 
 import Form from 'vform';
 window.Form = Form;
+
+import moment from 'moment';
 
 var Emitter = require('tiny-emitter')
 window.emitter = new Emitter()
@@ -39,11 +42,18 @@ const app = createApp({})
 
 app.component('multi-select', Multiselect);
 app.component('logout-component', LogoutComponent);
+app.component('notifications-component', NotificationsComponent);
 app.component('departments', Departments);
 app.component('permissions-create', PermissionsCreate);
 app.component('users', Users);
 app.component('tasks', Tasks);
 app.component('inbox', Inbox);
+
+app.config.globalProperties.$filters = {
+  myDate(date) {
+    return moment(date).startOf('hour').fromNow();
+  }
+}
 
 window.url = '/task_mis/'
 

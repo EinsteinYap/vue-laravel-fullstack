@@ -2,6 +2,8 @@ import axios from 'axios';
 
 export default {
     state: {
+        unread_notifications: {},
+        all_notifications: {},
         filtered_departments: [],
         filtered_roles: [],
         filtered_permission_categories: [],
@@ -10,6 +12,12 @@ export default {
         filtered_users: [],
     },
     getters: {
+        unread_notifications(state) {
+            return state.unread_notifications;
+        },
+        all_notifications(state) {
+            return state.all_notifications;
+        },
         filtered_departments(state) {
             return state.filtered_departments;
         },
@@ -27,6 +35,12 @@ export default {
         },
     },
     mutations: {
+        set_all_notifications: (state, data) => {
+            state.all_notifications = data;
+        },
+        set_unread_notifications: (state, data) => {
+            state.unread_notifications = data;
+        },
         set_all_departments: (state, data) => {
             state.filtered_departments = [];
             data.forEach(department => state.filtered_departments.push({value: department.id, label: department.name}));
@@ -103,6 +117,34 @@ export default {
         },
     },
     actions: {
+        getAllNotifications: (context) => {
+            axios.get(`${window.url}api/getAllNotifications`).then((response) => {
+                context.commit('set_all_notifications', response.data)
+            });
+        },
+        getUnreadNotifications: (context) => {
+            axios.get(`${window.url}api/getUnreadNotifications`).then((response) => {
+                context.commit('set_unread_notifications', response.data)
+            });
+        },
+        clearAllNotifications: (context) => {
+            axios.get(`${window.url}api/clearAllNotifications`).then((response) => {
+                context.dispatch('getAllNotifications')
+                window.Toast.fire({
+                    icon: 'success',
+                    title: 'All notifications cleared successfully!'
+                });
+            });
+        },
+        markNotificationAsRead: (context, unreadData) => {
+            axios.get(`${window.url}api/markNotificationAsRead?unread=${unreadData.id}`).then((response) => {
+                context.dispatch('getUnreadNotifications')
+                window.Toast.fire({
+                    icon: 'success',
+                    title: 'Notification marked as read!'
+                });
+            });
+        },
         getAllDepartments: (context) => {
             axios.get(`${window.url}api/getAllDepartments`).then((response) => {
                 context.commit('set_all_departments', response.data)

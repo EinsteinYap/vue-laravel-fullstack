@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Comment;
+use App\Models\Task;
+use App\Models\User;
+
+use App\Notifications\TaskNotification;
+use App\Notifications\TaskEmailNotification;
+use Notification;
 
 class CommentController extends Controller
 {
@@ -24,6 +30,27 @@ class CommentController extends Controller
             'comment'       => $request->comment,
         ]);
 
+        $task = Task::findOrFail($request->task_id);
+
+        $users_array = [];
+
+        array_push($users_array, auth('api')->user()->id);
+        array_push($users_array, $task->user_id);
+        
+        foreach($task->users as $user) {
+            array_push($users_array, $user->id);
+        }
+
+        $message = 'New Comment';
+
+        foreach($users_array as $user_id) {
+            if(auth('api')->user()->id != $user_id) {
+                $userToNotify = User::findOrFail($user_id);
+                $userToNotify->notify(new TaskNotification(auth('api')->user(), $task, $message));
+                Notification::send($userToNotify, new TaskEmailNotification(auth('api')->user(), $task, $message));
+            }
+        }
+
         return response()->json('success');
     }
 
@@ -36,6 +63,27 @@ class CommentController extends Controller
         Comment::where('id', $id)->update([
             'comment'       => $request->comment,
         ]);
+
+        $task = Task::findOrFail($request->task_id);
+
+        $users_array = [];
+
+        array_push($users_array, auth('api')->user()->id);
+        array_push($users_array, $task->user_id);
+        
+        foreach($task->users as $user) {
+            array_push($users_array, $user->id);
+        }
+
+        $message = 'Comment Updated';
+
+        foreach($users_array as $user_id) {
+            if(auth('api')->user()->id != $user_id) {
+                $userToNotify = User::findOrFail($user_id);
+                $userToNotify->notify(new TaskNotification(auth('api')->user(), $task, $message));
+                Notification::send($userToNotify, new TaskEmailNotification(auth('api')->user(), $task, $message));
+            }
+        }
 
         return response()->json('success');
     }

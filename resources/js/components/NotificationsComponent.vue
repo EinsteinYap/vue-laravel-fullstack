@@ -76,6 +76,7 @@
         },
         mounted() {
             this.$store.dispatch('getUnreadNotifications')
+            this.listenToNotifications()
         },
         methods: {
             clearAllNotifications() {
@@ -111,6 +112,11 @@
             getAllNotifications() {
                 this.$store.dispatch('getAllNotifications')
                 $('#notificationsModal').modal('show')
+            },
+            listenToNotifications() {
+                Echo.channel(`notification`).listen('NotificationEvent', () => {
+                    this.$store.dispatch('getUnreadNotifications')
+                });
             },
         }
     }

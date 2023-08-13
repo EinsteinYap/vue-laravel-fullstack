@@ -11,6 +11,9 @@ use App\Notifications\TaskNotification;
 use App\Notifications\TaskEmailNotification;
 use Notification;
 
+use App\Events\CommentEvent;
+use App\Events\NotificationEvent;
+
 class CommentController extends Controller
 {
     public function getComments($id)
@@ -51,6 +54,9 @@ class CommentController extends Controller
             }
         }
 
+        broadcast(new CommentEvent($task))->toOthers();
+        broadcast(new NotificationEvent())->toOthers();
+
         return response()->json('success');
     }
 
@@ -85,11 +91,17 @@ class CommentController extends Controller
             }
         }
 
+        broadcast(new CommentEvent($task))->toOthers();
+        broadcast(new NotificationEvent())->toOthers();
+
         return response()->json('success');
     }
 
     public function deleteComment($id)
     {
+        $comment = Comment::findOrFail($id);
+        $task = Task::findOrFail($comment->task_id);
+        broadcast(new CommentEvent($task))->toOthers();
         return response()->json(Comment::where('id', $id)->delete());
     }
 }

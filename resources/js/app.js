@@ -16,6 +16,19 @@ import Tasks from './components/tasks/Tasks.vue';
 import Inbox from './components/tasks/Inbox.vue';
 import Reports from './components/tasks/Reports.vue';
 
+import { createI18n } from 'vue-i18n/dist/vue-i18n.cjs';
+
+let locale = window.locale;
+
+import messagesFile from './messages';
+const messages = messagesFile.messages;
+
+const i18n = createI18n({
+  locale: locale,
+  fallbackLocale: 'en',
+  messages,
+})
+
 import Form from 'vform';
 window.Form = Form;
 
@@ -66,6 +79,7 @@ app.config.globalProperties.$filters = {
 
 window.url = '/task_mis/'
 
+app.use(i18n);
 app.use(store);
 
 app.mount('#app')

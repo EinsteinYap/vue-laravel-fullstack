@@ -62,14 +62,18 @@
                         </li>
                     @endcan
                     @can('inbox-read')
+                    @cannot('admin')
                         <li class="{{ Request::is('tasks/inbox') ? 'active' : '' }}">
                             <a href="{{route('tasksInbox')}}">Inbox Tasks</a>
                         </li>
+                    @endcannot
                     @endcan
                     @can('completed-read')
+                    @cannot('admin')
                         <li class="{{ Request::is('tasks/completed') ? 'active' : '' }}">
                             <a href="{{route('tasksCompleted')}}">Completed Tasks</a>
                         </li>
+                    @endcannot
                     @endcan
                     @can('reports-read')
                         <li class="{{ Request::is('tasks/reports') ? 'active' : '' }}">

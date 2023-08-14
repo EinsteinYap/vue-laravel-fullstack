@@ -17,10 +17,10 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('task.{id}', function() {
+Broadcast::channel('task.{id}', function () {
     return true;
 }, ['gaurds' => ['web', 'api']]);
 
-Broadcast::channel('notification', function() {
+Broadcast::channel('notification', function () {
     return true;
 }, ['gaurds' => ['web', 'api']]);

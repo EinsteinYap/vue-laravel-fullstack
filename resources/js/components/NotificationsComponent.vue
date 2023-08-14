@@ -79,6 +79,11 @@
             this.listenToNotifications()
         },
         methods: {
+            listenToNotifications(task) {
+                Echo.channel(`notification`).listen('NotificationEvent', () => {
+                    this.$store.dispatch('getUnreadNotifications')
+                });
+            },
             clearAllNotifications() {
                 Swal.fire({
                     title: 'Are you sure?',
@@ -112,11 +117,6 @@
             getAllNotifications() {
                 this.$store.dispatch('getAllNotifications')
                 $('#notificationsModal').modal('show')
-            },
-            listenToNotifications() {
-                Echo.channel(`notification`).listen('NotificationEvent', () => {
-                    this.$store.dispatch('getUnreadNotifications')
-                });
             },
         }
     }

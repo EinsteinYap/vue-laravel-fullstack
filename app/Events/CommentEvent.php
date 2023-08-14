@@ -41,7 +41,7 @@ class CommentEvent implements ShouldBroadcastNow
     public function broadcastWith()
     {
         return [
-            'task' => $this->task,
+            'task'  => $this->task,
         ];
     }
 }

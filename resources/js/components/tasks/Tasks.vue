@@ -238,7 +238,7 @@
                 Echo.channel(`task.${task.id}`).listen('CommentEvent', () => {
                     this.$store.dispatch('getComments', {taskData: task})
                 });
-            }, 
+            },
             searchTask() {
                 this.$store.dispatch('searchTask', this.searchData)
             },

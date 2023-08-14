@@ -35,7 +35,7 @@
     export default {
         data() {
             return {
-                year: '2023',
+                year: '2022',
                 myChart: null,
             }
         },
@@ -55,7 +55,7 @@
         methods: {
             getBarChartData() {
                 axios.get(`${window.url}api/getBarChartData/${this.year}`).then((response) => {
-
+                    
                     let datasets = []
 
                     if(this.current_permissions.has('tasks-create')) {

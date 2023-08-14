@@ -117,6 +117,23 @@ export default {
         },
     },
     actions: {
+        storeContact: (context, contactData) => {
+            window.emitter.emit('emailLoading', true)
+            contactData.post(`${window.url}api/storeContact`).then((response) => {
+                $('#contactModal').modal('hide')
+                window.Toast.fire({
+                    icon: 'success',
+                    title: 'Email sent successfully!'
+                });
+            }).catch(err => {
+                window.Toast.fire({
+                    icon: 'warning',
+                    title: 'Email not sent, please try again!'
+                });
+            }).finally(() => {
+                window.emitter.emit('emailLoading', false)
+            });
+        },
         getAllNotifications: (context) => {
             axios.get(`${window.url}api/getAllNotifications`).then((response) => {
                 context.commit('set_all_notifications', response.data)
